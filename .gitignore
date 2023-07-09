@@ -67,3 +67,5 @@ node_modules/
 
 memo.rb
 memo.js
+
+.DS_Store

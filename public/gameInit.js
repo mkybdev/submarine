@@ -478,7 +478,7 @@ export default async function gameInit(db, roomID, user) {
         game.state = "setInitialState";
         console.log("setInitialState Start");
         async function setShip(ship) {
-            game.updateMessage(ship.type + "艦を配置する場所を選択してください（クリックで選択）。");
+            game.updateMessage(ship.type + "を配置する場所を選択してください（クリックで選択）。");
             while (true) {
                 const el = await game.readUserClick();
                 if (el.innerHTML == "") {
