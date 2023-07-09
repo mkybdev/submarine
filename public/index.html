@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Submarine</title>
-
+    <link rel="stylesheet" href="./index.css" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/9.22.2/firebase-app-compat.js"></script>
     <!-- include only the Firebase features as you need -->
@@ -16,38 +19,43 @@
       to avoid connecting the SDK to running emulators.
     -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <script type="module" src="./connection.js"></script>
-    <script type="module" src="./main.js"></script>
+    <script type="module" src="./roomInit.js"></script>
+    <script type="module" src="./gameInit.js"></script>
   </head>
   <body>
-    <div id="init">
-      <h1 id="initMessage">Welcome to Submarine!</h1>
+    <div class="init" id="init">
+      <h1 id="title">Submarine</h1>
+      <h1 id="initMessage">名前とルームIDを入力</h1>
       <div class="form">
-        Enter Your Name and Room ID
         <input type="text" id="userName" placeholder="Name">
         <input type="text" id="roomID" placeholder="Room ID">
       </div>
       <button id="enterRoom">Enter Room</button>
     </div>
-    <div id="game">
-      <h1 id="gameMessage"></h1>
-      <table class="board" id="board" border="1" style="border-collapse: collapse"></table>
-      <div class="form">
-        w
-        <input type="number" class="w" placeholder="x">
-        <input type="number" class="w" placeholder="y">
+    <div class="operator">
+      <div class="messenger" id="mesSP">
+        <div class="icon">
+          <img src="./commander.png">
+        </div>
+        <div class="message" id="gameMessageSP"></div>
       </div>
-      <div class="form">
-        c
-        <input type="number" class="c" placeholder="x">
-        <input type="number" class="c" placeholder="y">
+    </div>
+    <div class="screen">
+      <div id="game">
+        <div class="board" id="board"></div>
       </div>
-      <div class="form">
-        s
-        <input type="number" class="s" placeholder="x">
-        <input type="number" class="s" placeholder="y">
+    </div>
+    <div class="operator">
+      <div class="messenger" id="mesPC">
+        <div class="icon">
+          <img src="./commander.png">
+        </div>
+        <div class="message" id="gameMessagePC"></div>
       </div>
-      <button id="submit">Send</button>
+      <div class="controller">
+        <div class="arrows"></div>
+        <div class="buttons"></div>
+      </div>
     </div>
   </body>
 </html>

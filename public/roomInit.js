@@ -3,7 +3,7 @@ import { getFirestore, connectFirestoreEmulator, onSnapshot, collection, getDoc,
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import main from './main.js';
+import gameInit from './gameInit.js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -32,7 +32,10 @@ function initializeFirebase() {
 const isEmulating = true;
 const db = (isEmulating) ? initializeFirebaseEmulating() : initializeFirebase();
 
-document.getElementById('game').style.display = "none";
+for (const el of document.getElementsByClassName('operator')) {
+    el.style.display = "none";
+}
+document.querySelector('.screen').style.display = "none";
 
 document.getElementById('enterRoom').onclick = async function() {
     const roomID = document.getElementById('roomID').value;
@@ -46,8 +49,11 @@ document.getElementById('enterRoom').onclick = async function() {
             users: users
         });
         document.getElementById('init').style.display = "none";
-        document.getElementById('game').style.display = "block";
-        main(db, roomID, 1);
+        for (const el of document.getElementsByClassName('operator')) {
+            el.style.display = "flex";
+        }
+        document.querySelector('.screen').style.display = "block";
+        gameInit(db, roomID, 1);
     } else {
         const fieldInitial = {};
         for (let i = 0; i < 5; i++) {
@@ -56,22 +62,27 @@ document.getElementById('enterRoom').onclick = async function() {
         try {
             await setDoc(docRef, {
                 users: {0: userName, 1: ""},
-                ownfield: fieldInitial,
-                oppfield: fieldInitial,
-                turn: 0
+                field: {0: fieldInitial, 1: fieldInitial},
+                turn: 0,
+                hand: {},
+                ships: {0: {}, 1: {}}
             });
         } catch (e) {
             console.error("Error setting document: ", e);
         }
-        document.getElementById('initMessage').textContent = "Waiting for the opponent...";
+        document.getElementById('initMessage').textContent = "相手を待っています...";
         document.querySelector('.form').style.display = "none";
+        document.querySelector('#enterRoom').style.display = "none";
         const wait = await onSnapshot(docRef, (doc) => {
             const users = doc.data().users;
             if (users[1] !== "") {
                 wait();
                 document.getElementById('init').style.display = "none";
-                document.getElementById('game').style.display = "block";
-                main(db, roomID, 0);
+                for (const el of document.getElementsByClassName('operator')) {
+                    el.style.display = "flex";
+                }
+                document.querySelector('.screen').style.display = "block";
+                gameInit(db, roomID, 0);
             }
         });
     }

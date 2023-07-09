@@ -1,0 +1,267 @@
+@font-face {
+    font-family: 'PixelMplus';
+    font-weight: normal;
+    src: url(./font/PixelMplus10-Regular.ttf);
+}
+
+.firebase-emulator-warning {
+    display: none;
+}
+
+*:focus {
+    outline: none;
+}
+
+html {
+    background-color: black;
+    overflow: hidden;
+    width: 100dvw;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    font-family: 'PixelMplus', sans-serif;
+    font-weight: normal;
+    color: white;
+    letter-spacing: 0.075em;
+}
+
+body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+@media (orientation: portrait) {
+    body {
+        flex-direction: column;
+    }
+}
+
+.init {
+    margin: auto 0;
+    text-align: center;
+    transform: translateY(-20%);
+}
+
+#title {
+    margin: 0 0 10dvh 0;
+    font-size: 7em;
+}
+
+#initMessage {
+    margin: 5dvh 0;
+    font-size: 3em;
+}
+
+.form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.form input {
+    margin: 2dvh 2dvw;
+    font-size: 2em;
+    width: 40%;
+    font-family: 'PixelMplus', sans-serif;
+    padding: 0 0.5em;
+}
+
+#enterRoom {
+    margin: 2dvh 2dvw;
+    padding: 0.1em 1em;
+    font-size: 2em;
+    font-family: 'PixelMplus', sans-serif;
+    background-color: grey;
+    color: white;
+}
+
+@media (max-width: 850px) {
+    #title {
+        margin: 0 0 10dvh 0;
+        font-size: 4em;
+    }
+    #initMessage {
+        font-size: 2em;
+    }
+}
+
+.screen {
+    height: 90dvh;
+    width: 85dvh;
+    border-radius: 5%;
+    border: 3px solid white;
+    margin: auto 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1500px) {
+    .screen {
+        height: 70dvh;
+        width: calc(70dvh * 85/90);
+    }
+}
+
+@media (orientation: portrait) {
+    .screen {
+        height: calc(65dvw * 90/85);
+        width: 65dvw;
+        margin: 0 auto;
+    }
+}
+
+#game {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.board {
+    width: 90%;
+    aspect-ratio: 1/1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    pointer-events: auto;
+}
+
+.operator {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cell {
+    color: red;
+}
+
+@media (orientation: portrait) {
+    .operator {
+        margin: 0 0 3dvh 0;
+    }
+}
+
+.messenger {
+    display: flex;
+}
+
+#mesSP {
+    display: none;
+}
+
+@media (orientation: portrait) {
+    #mesPC {
+        display: none;
+    }
+    #mesSP {
+        display: flex;
+    }
+}
+
+.messenger .icon {
+    width: 15dvw;
+    height: 15dvw;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (orientation: portrait) {
+    .messenger .icon {
+        justify-content: flex-start;
+    }
+}
+
+.icon img {
+    width: 80%;
+    height: 80%;
+}
+
+.messenger .message {
+    display: flex;
+    width: 25dvw;
+    height: 15dvw;
+    border: 2px solid white;
+    background-color: black;
+    box-sizing: border-box;
+    border-radius: 5%;
+    font-size: 1.5em;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 1500px) {
+    .messenger .icon {
+        width: 12.5dvw;
+        height: 12.5dvw;
+    }  
+    .messenger .message {
+        width: 22.5dvw;
+        height: 12.5dvw;
+    }
+}
+
+@media (orientation: portrait) {
+    .messenger .icon {
+        width: 30dvw;
+        height: 30dvw;
+    }  
+    .messenger .message {
+        width: 50dvw;
+        height: 30dvw;
+        font-size: 1em;
+    }
+}
+
+.controller {
+    display: flex;
+}
+
+@media (orientation: portrait) {
+    .controller {
+        margin: 3dvh 0 0 0;
+    }
+}
+
+.controller .arrows {
+    width: 20dvw;
+    height: 20dvw;
+    background-color: red;
+}
+
+.controller .buttons {
+    width: 20dvw;
+    height: 20dvw;
+    background-color: blue;
+}
+
+@media (max-width: 1500px) {
+    .controller .arrows {
+        width: 17.5dvw;
+        height: 17.5dvw;
+    }    
+    .controller .buttons {
+        width: 17.5dvw;
+        height: 17.5dvw;
+    }
+}
+
+@media (orientation: portrait) {
+    .controller .arrows, .controller .buttons {
+        width: 35dvw;
+        height: 35dvw;
+    }    
+}
