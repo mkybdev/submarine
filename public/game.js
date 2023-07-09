@@ -19,7 +19,7 @@ export async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
-            game.updateMessage(game.oppName + "さんが" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください（Mキーで移動、Aキーで攻撃）。");
+            game.updateMessage(game.oppName + "さんが" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
                 game.ownShips[hd.ship].hp--;
