@@ -24,6 +24,8 @@ html {
     color: white;
     letter-spacing: 0.075em;
     user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
 }
 
 body {
@@ -56,11 +58,11 @@ body {
 
 #initMessage {
     margin: 5dvh 0;
-    font-size: 2.5em;
+    font-size: 2em;
 }
 
 .init h2 {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 .playOption {
@@ -88,6 +90,7 @@ body {
     font-family: 'PixelMplus', sans-serif;
     padding: 0.25em 0.5em;
     user-select: auto;
+    cursor: auto;
 }
 
 #enterRoom {
@@ -155,7 +158,34 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    pointer-events: auto;
+}
+
+.cell {
+    position: relative;
+}
+
+.shipIcon {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+#hp {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    font-size: 0.5em;
+    font-family: 'PixelMplus', sans-serif;
 }
 
 .operator {
@@ -163,10 +193,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.cell {
-    color: red;
 }
 
 @media (orientation: portrait) {
@@ -220,7 +246,7 @@ body {
     background-color: black;
     box-sizing: border-box;
     border-radius: 5%;
-    font-size: 1.5em;
+    font-size: 1.75em;
     padding: 0.5em;
     align-items: center;
     justify-content: center;
@@ -234,7 +260,7 @@ body {
     .messenger .message {
         width: 25dvw;
         height: 15dvw;
-        font-size: 1.2em;
+        font-size: 1.5em;
     }
 }
 
@@ -246,7 +272,7 @@ body {
     .messenger .message {
         width: 30dvw;
         height: 20dvw;
-        font-size: 1em;
+        font-size: 1.25em;
     }
 }
 
@@ -258,7 +284,7 @@ body {
     .messenger .message {
         width: 50dvw;
         height: 30dvw;
-        font-size: 1em;
+        font-size: 1.25em;
     }
 }
 
@@ -326,7 +352,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 2em;
+}
+
+#enter {
+    grid-column: 2/3;
+    grid-row: 2/3;
 }
 
 #up {
@@ -354,8 +385,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5em;
-    color: black;
     border-radius: 15%;
 }
 
@@ -364,7 +393,17 @@ body {
     grid-row: 1/2;
 }
 
+#move img {
+    width: 85%;
+    aspect-ratio: 1/1;
+}
+
 #attack {
     grid-column: 2/3;
     grid-row: 2/3;
+}
+
+#attack img {
+    width: 70%;
+    aspect-ratio: 1/1;
 }

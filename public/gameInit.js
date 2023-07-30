@@ -4,9 +4,10 @@ import { turnPlay, turnWait } from "./game.js";
 export class Ship {
     constructor(type) {
         this.type = type;
+        this.name = (type == "W") ? "戦艦" : (type == "C") ? "巡洋艦" : "潜水艦";
         this.x;
         this.y;
-        this.hp = (type == "W") ? 1 : (type == "C") ? 1 : 1;
+        this.hp = (type == "W") ? 3 : (type == "C") ? 2 : 1;
         this.isAlive = true;
     }
 }
@@ -87,6 +88,7 @@ export class Game {
             let ownShipsObj = {};
             Object.keys(this.ownShips).forEach((key) => {
                 ownShipsObj[key] = {
+                    name: this.ownShips[key].name,
                     type: this.ownShips[key].type,
                     x: this.ownShips[key].x,
                     y: this.ownShips[key].y,
@@ -143,7 +145,7 @@ export class Game {
             });
             Object.keys(this.ownShips).forEach((key) => {
                 const ship = this.ownShips[key];
-                if (ship.x != undefined) {
+                if (ship.x != undefined && ship.isAlive) {
                     this.ownField[ship.y][ship.x] = ship.type;
                 }
             });
@@ -167,7 +169,6 @@ export class Game {
                     btn.className = "cell";
                     btn.style.border = "1.5px solid white";
                     btn.style.backgroundColor = "black";
-                    btn.style.color = "white";
                     btn.style.width = "100%";
                     btn.style.height = "100%";
                     if (window.getComputedStyle(document.getElementById("mesSP")).getPropertyValue('display') == "none") {
@@ -175,7 +176,6 @@ export class Game {
                     } else {
                         btn.style.fontSize = "1.75em";
                     }
-                    btn.style.fontFamily = "PixelMplus";
                     btn.id = "cell" + i + j;
                     board.appendChild(btn);
                 }
@@ -195,7 +195,10 @@ export class Game {
             Object.keys(this.ownShips).forEach((key) => {
                 const ship = this.ownShips[key];
                 if (ship.x != undefined && ship.isAlive) {
-                    document.getElementById("cell" + ship.y + ship.x).innerHTML = ship.type;
+                    document.getElementById("cell" + ship.y + ship.x).innerHTML =
+                        (ship.type == "W") ? "<img src=\"warship.png\" class=\"shipIcon\" name=\"W\"><div id=\"hp\">" + ship.hp + "</div>" :
+                        (ship.type == "C") ? "<img src=\"cruiser.png\" class=\"shipIcon\" name=\"C\"><div id=\"hp\">" + ship.hp + "</div>" :
+                        "<img src=\"submarine.png\" class=\"shipIcon\" name=\"S\"><div id=\"hp\">" + ship.hp + "</div>";
                 }
             });
             console.log("updateBoard OK");
@@ -212,7 +215,7 @@ export class Game {
                     cells.forEach((cell) => {
                         cell.removeEventListener("click", click);
                     });
-                    resolve(e.target);
+                    resolve(e.currentTarget);
                 });
             });
         });
@@ -266,20 +269,21 @@ export class Game {
     async move() {
         this.state = "move";
         console.log("move Start")
-        this.updateMessage("どの艦を動かしますか？（クリックで選択）");
-        let el;
+        this.updateMessage("どの艦を動かしますか？");
+        let elname;
         while (true) {
-            el = await this.readUserClick();
-            if (el.innerHTML != "") {
+            const el = await this.readUserClick();
+            elname = el.children[0].name;
+            if (elname != undefined) {
                 break;
             } else {
                 this.updateCaution("別の場所を選択してください。");
             }
         }
-        const ship = this.ownShips[el.innerHTML];
+        const ship = this.ownShips[elname];
         let moveTo = [ship.x, ship.y];
-        this.updateMessage("艦の移動先を選択してください（矢印ボタンで移動、Ｍボタンで決定）。");
-        const collisionCheck = (pos, ship) => {
+        this.updateMessage("艦の移動先を選択してください。");
+        const collisionCheck = (pos) => {
             let res = false;
             ["W", "C", "S"].forEach((key) => {
                 if (pos[0] == this.ownShips[key].x && pos[1] == this.ownShips[key].y && this.ownShips[key].isAlive) {
@@ -288,12 +292,12 @@ export class Game {
             });
             return res;
         }
-        let res = { handType: "", shipType: "", direction: "", distance: 0, message: "" };
+        let res = { handType: "", shipType: "", shipName: "", direction: "", distance: 0, message: "" };
         while (true) {
             document.getElementById("cell" + ship.y + ship.x).style.border = "2px solid blue";
             document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
             const button = await this.readUserInput();
-            if (button == "move") {
+            if (button == "enter") {
                 if (collisionCheck(moveTo, ship.type)) {
                     this.updateCaution("すでに艦がいる場所には動かせません。");
                 } else {
@@ -301,6 +305,7 @@ export class Game {
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
                     res.handType = "M";
                     res.shipType = ship.type;
+                    res.shipName = ship.name;
                     if (moveTo[0] - ship.x != 0) {
                         res.direction = "x";
                         res.distance = moveTo[0] - ship.x;
@@ -319,7 +324,7 @@ export class Game {
                     } else {
                         tmp = (res.distance > 0) ? "下" : "上";
                     }
-                    res.message = ship.type + "を" + tmp + "に" + Math.abs(res.distance) + "マス移動しました。";
+                    res.message = ship.name + "を" + tmp + "に" + Math.abs(res.distance) + "マス移動しました。";
                     await this.changeTurn();
                     break;
                 }
@@ -367,8 +372,6 @@ export class Game {
                 } else {
                     this.updateCaution("他の場所を選択してください。");
                 }
-            } else {
-                //this.updateCaution("無効なボタン入力です。");
             }
         }
         console.log("move End")
@@ -402,13 +405,13 @@ export class Game {
         console.log("attack Start")
         await this.loadOppField();
         await this.loadOppShips();
-        this.updateMessage("攻撃する場所を選んでください（クリックで選択）。");
+        this.updateMessage("攻撃する場所を選択してください。");
         const canAttack = (pos) => {
             let res = false;
             ["W", "C", "S"].forEach((key) => {
                 let xdif = Math.abs(pos[0] - this.ownShips[key].x);
                 let ydif = Math.abs(pos[1] - this.ownShips[key].y);
-                if (xdif < 2 && ydif < 2) {
+                if (xdif < 2 && ydif < 2 && this.ownShips[key].isAlive) {
                     res = true;
                 }
             });
@@ -424,7 +427,7 @@ export class Game {
                 this.updateCaution("他の場所を選択してください。");
             }
         }
-        let res = { "handType": "A", "pos": pos, "ship": "", "message": "" };
+        let res = { handType: "A", pos: pos, ship: "", shipName: "", message: "" };
         const el = await this.getOpp(pos);
         if (el != "") {
             try {
@@ -441,11 +444,12 @@ export class Game {
             }
             this.oppShips[el].hp--;
             res.ship = el;
+            res.shipName = this.oppShips[el].name;
             if (this.oppShips[el].hp == 0) {
                 this.oppShips[el].isAlive = false;
-                res.message += el + "を撃沈しました！";
+                res.message += res.shipName + "を撃沈しました！";
             } else {
-                res.message += el + "に攻撃しました。";
+                res.message += res.shipName + "に攻撃しました。";
             }
         } else {
             res.message += "攻撃は外れました。";
@@ -454,7 +458,7 @@ export class Game {
         if (surr.length > 0) {
             res.message += "攻撃した場所は";
             surr.forEach((el) => {
-                res.message += el + "、";
+                res.message += this.oppShips[el].name + "と";
             });
             let tmp = res.message.slice(0, -1);
             res.message = tmp + "の近くでした。";
@@ -488,7 +492,7 @@ export default async function gameInit(db, roomID, user) {
         game.state = "setInitialState";
         console.log("setInitialState Start");
         async function setShip(ship) {
-            game.updateMessage(ship.type + "を配置する場所を選択してください（クリックで選択）。");
+            game.updateMessage(ship.name + "を配置する場所を選択してください。");
             while (true) {
                 const el = await game.readUserClick();
                 if (el.innerHTML == "") {
@@ -518,7 +522,7 @@ export default async function gameInit(db, roomID, user) {
     async function waitInitialState() {
         game.state = "waitInitialState";
         console.log("waitInitialState Start");
-        game.updateMessage("相手の配置を待っています...");
+        game.updateMessage("相手が艦を配置するのを待っています...");
         const waitInput = await onSnapshot(game.docRef, async () => {
             await game.loadTurn();
             if (game.turn == game.user) {

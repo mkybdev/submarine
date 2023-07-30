@@ -16,7 +16,7 @@ class GameCpu extends Game {
         });
         Object.keys(this.ownShips).forEach((key) => {
             const ship = this.ownShips[key];
-            if (ship.x != undefined) {
+            if (ship.x != undefined && ship.isAlive) {
                 this.ownField[ship.y][ship.x] = ship.type;
             }
         });
@@ -31,7 +31,7 @@ class GameCpu extends Game {
         });
         Object.keys(this.oppShips).forEach((key) => {
             const ship = this.oppShips[key];
-            if (ship.x != undefined) {
+            if (ship.x != undefined && ship.isAlive) {
                 this.oppField[ship.y][ship.x] = ship.type;
             }
         });
@@ -112,13 +112,13 @@ class GameCpu extends Game {
     async attack() {
         this.state = "attack";
         console.log("attack Start");
-        this.updateMessage("攻撃する場所を選んでください（クリックで選択）。");
+        this.updateMessage("攻撃する場所を選択してください。");
         const canAttack = (pos) => {
             let res = false;
             Object.keys(this.oppShips).forEach((key) => {
                 let xdif = Math.abs(pos[0] - this.ownShips[key].x);
                 let ydif = Math.abs(pos[1] - this.ownShips[key].y);
-                if (xdif < 2 && ydif < 2) {
+                if (xdif < 2 && ydif < 2 && this.ownShips[key].isAlive) {
                     res = true;
                 }
             });
@@ -134,16 +134,17 @@ class GameCpu extends Game {
                 this.updateCaution("他の場所を選択してください。");
             }
         }
-        let res = { "handType": "A", "pos": pos, "ship": "", "message": "" };
+        let res = { handType: "A", pos: pos, ship: "", shipName: "", message: "" };
         const el = await this.getOpp(pos);
         if (el != "") {
             this.oppShips[el].hp--;
             res.ship = el;
+            res.shipName = this.oppShips[el].name;
             if (this.oppShips[el].hp == 0) {
                 this.oppShips[el].isAlive = false;
-                res.message += el + "を撃沈しました！";
+                res.message += res.shipName + "を撃沈しました！";
             } else {
-                res.message += el + "に攻撃しました。";
+                res.message += res.shipName + "に攻撃しました。";
             }
         } else {
             res.message += "攻撃は外れました。";
@@ -152,7 +153,7 @@ class GameCpu extends Game {
         if (surr.length > 0) {
             res.message += "攻撃した場所は";
             surr.forEach((el) => {
-                res.message += el + "、";
+                res.message += this.oppShips[el].name + "と";
             });
             let tmp = res.message.slice(0, -1);
             res.message = tmp + "の近くでした。";
@@ -180,7 +181,7 @@ class GameCpu extends Game {
             const cd = Math.floor(Math.random() * 5);
             moveTo[xy] = cd;
         }
-        let res = { handType: "M", shipType: ship.type, direction: "", distance: 0, message: "" };
+        let res = { handType: "M", shipType: ship.type, shipName: ship.name, direction: "", distance: 0, message: "" };
         if (moveTo[0] - ship.x != 0) {
             res.direction = "x";
             res.distance = moveTo[0] - ship.x;
@@ -197,7 +198,7 @@ class GameCpu extends Game {
         } else {
             tmp = (res.distance > 0) ? "下" : "上";
         }
-        res.message = ship.type + "を" + tmp + "に" + Math.abs(res.distance) + "マス移動しました。";
+        res.message = ship.name + "を" + tmp + "に" + Math.abs(res.distance) + "マス移動しました。";
         console.log("moveCpu End");
         return new Promise((resolve) => {
             resolve(res);
@@ -212,7 +213,7 @@ class GameCpu extends Game {
             Object.keys(this.oppShips).forEach((key) => {
                 let xdif = Math.abs(pos[0] - this.oppShips[key].x);
                 let ydif = Math.abs(pos[1] - this.oppShips[key].y);
-                if (xdif < 2 && ydif < 2) {
+                if (xdif < 2 && ydif < 2 && this.oppShips[key].isAlive) {
                     res = true;
                 }
             });
@@ -222,16 +223,17 @@ class GameCpu extends Game {
         while (!canAttack(pos)) {
             pos = [Math.floor(Math.random() * 5), Math.floor(Math.random() * 5)];
         }
-        let res = { "handType": "A", "pos": pos, "ship": "", "message": "" };
+        let res = { handType: "A", pos: pos, ship: "", shipName: "", "message": "" };
         const el = await this.getOwn(pos);
         if (el != "") {
             this.ownShips[el].hp--;
             res.ship = el;
+            res.shipName = this.ownShips[el].name;
             if (this.ownShips[el].hp == 0) {
                 this.ownShips[el].isAlive = false;
-                res.message += el + "を撃沈しました！";
+                res.message += res.shipName + "を撃沈しました！";
             } else {
-                res.message += el + "に攻撃しました。";
+                res.message += res.shipName + "に攻撃しました。";
             }
         } else {
             res.message += "攻撃は外れました。";
@@ -240,7 +242,7 @@ class GameCpu extends Game {
         if (surr.length > 0) {
             res.message += "攻撃した場所は";
             surr.forEach((el) => {
-                res.message += el + "、";
+                res.message += this.ownShips[el].name + "、";
             });
             let tmp = res.message.slice(0, -1);
             res.message = tmp + "の近くでした。";
@@ -269,7 +271,7 @@ export default async function gameInitCpu() {
     game.oppField = fieldInitial();
 
     async function setShip(ship) {
-        game.updateMessage(ship.type + "を配置する場所を選択してください（クリックで選択）。");
+        game.updateMessage(ship.name + "を配置する場所を選択してください。");
         while (true) {
             const el = await game.readUserClick();
             if (el.innerHTML == "") {
@@ -320,13 +322,13 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function turnPlay(game) {
     /*console.log(game.ownShips);
-    console.log(game.ownField);
+    console.log(game.ownField);*/
     console.log(game.oppShips);
     console.log(game.oppField);
-    console.log("turnPlay Start");*/
+    console.log("turnPlay Start");
     const hd = game.hand;
     if (Object.keys(hd).length == 0) {
-        game.updateMessage("移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+        game.updateMessage("移動するか攻撃するかを選択してください。");
     } else {
         if (hd.handType == "M") {
             let tmp;
@@ -335,7 +337,7 @@ async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
-            game.updateMessage("相手が" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+            game.updateMessage("相手が" + hd.shipName + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
                 if (game.ownShips[hd.ship].hp == 0) {
@@ -348,17 +350,18 @@ async function turnPlay(game) {
                         }
                     });
                     if (isAllSunk) {
-                        const mes = "相手が(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。あなたの負けです。";
+                        const mes = "相手が(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。あなたの負けです。";
                         gameLose(game, mes);
                         return;
                     } else { 
-                        game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                        game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。移動するか攻撃するかを選択してください。");
                     }
                 } else {
-                    game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.ship + "に命中しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                    game.updateBoard();
+                    game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.shipName + "に命中しました。移動するか攻撃するかを選択してください。");
                 }
             } else { 
-                game.updateMessage("相手が(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                game.updateMessage("相手が(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください。");
             }
         }
     }
@@ -392,7 +395,7 @@ async function turnWait(game, mes) {
         gameWin(game, m);
         return;
     } else {
-        game.updateMessage(mes + "相手のターンです。相手を待っています…");
+        game.updateMessage(mes + "相手を待っています…");
         await sleep(2000);
         const tmp = Math.floor(Math.random() * 2);
         let res;

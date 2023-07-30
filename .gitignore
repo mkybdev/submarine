@@ -69,3 +69,4 @@ memo.rb
 memo.js
 
 .DS_Store
+.gitignore

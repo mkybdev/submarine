@@ -30,7 +30,7 @@ function initializeFirebase() {
 }
 
 // Initialize Firebase
-const isEmulating = true;
+const isEmulating = false;
 const db = (isEmulating) ? initializeFirebaseEmulating() : initializeFirebase();
 
 for (const el of document.getElementsByClassName('operator')) {
@@ -63,14 +63,33 @@ document.getElementById('playRoom').onclick = function() {
 }
 
 document.getElementById('enterRoom').onclick = async function() {
+    const userName = document.getElementById('userName').value;
     const roomID = document.getElementById('roomID').value;
-    if (roomID.startsWith("cpu")) {
-        document.getElementById('initMessage').textContent = "そのルームIDは使用できません";
+    const count = (str) => {
+        let len = 0;   
+        for (let i = 0; i < str.length; i++) {
+            (str[i].match(/[ -~]/)) ? len += 1 : len += 2;
+        }   
+        return len;  
+    }
+    if (count(userName) > 8) {
+        document.getElementById('initMessage').textContent = "名前は全角4文字または半角8文字以内で入力してください";
+    } else if (userName === "") {
+        document.getElementById('initMessage').textContent = "名前を入力してください";
+    } else if (roomID === "") {
+        document.getElementById('initMessage').textContent = "ルームIDを入力してください";
     } else {
         const userName = document.getElementById('userName').value;
         const docRef = doc(db, "rooms", roomID);
         const querySnapshot = await getDoc(docRef);
         if (querySnapshot.exists()) {
+            if (querySnapshot.data().users[1] !== "") {
+                document.getElementById('initMessage').textContent = "そのルームは既に埋まっています";
+                return;
+            } else if (querySnapshot.data().users[0] === userName) {
+                document.getElementById('initMessage').textContent = "相手と同じ名前は使用できません";
+                return;
+            }
             const users = querySnapshot.data().users;
             users[1] = userName;
             await updateDoc(docRef, {
@@ -93,7 +112,7 @@ document.getElementById('enterRoom').onclick = async function() {
                     field: {0: fieldInitial, 1: fieldInitial},
                     turn: 0,
                     hand: {},
-                    ships: {0: {}, 1: {}}
+                    ships: {0: {}, 1: {}},
                 });
             } catch (e) {
                 console.error("Error setting document: ", e);

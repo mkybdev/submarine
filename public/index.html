@@ -25,11 +25,11 @@
   </head>
   <body>
     <div class="init" id="init">
-      <h1 id="title">Submarine</h1>
+      <h1 id="title">潜水艦（仮）</h1>
       <h1 id="initMessage">プレイ方法を選択してください</h1>
       <div class="playOption" id="playOption">
         <h2 id="playCpu">▶︎ コンピュータと対戦</h2>
-        <h2 id="playRoom">▶︎ ルームを作成して対戦</h2>
+        <h2 id="playRoom">▶︎ ルーム対戦</h2>
       </div>
       <div class="cpu" id="cpu">
         <h2 id="easy">▶︎ EASY</h2>
@@ -64,14 +64,19 @@
       </div>
       <div class="controller">
         <div class="arrows">
+          <div class="arrow" id="enter">●</div>
           <div class="arrow" id="up">▲</div>
           <div class="arrow" id="down">▼</div>
           <div class="arrow" id="left">◀︎</div>
           <div class="arrow" id="right">▶︎</div>
         </div>
         <div class="buttons">
-          <div class="button" id="move">Ｍ</div>
-          <div class="button" id="attack">Ａ</div>
+          <div class="button" id="move">
+            <img src="./moveArrow.png" id="move">
+          </div>
+          <div class="button" id="attack">
+            <img src="./attack.png" id="attack">
+          </div>
         </div>
       </div>
     </div>

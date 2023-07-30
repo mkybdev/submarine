@@ -1,6 +1,8 @@
 import { onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 export async function turnPlay(game) {
+    console.log(game.ownShips);
+    console.log(game.ownField);
     console.log("turnPlay Start");
     let hd;
     try {
@@ -10,7 +12,7 @@ export async function turnPlay(game) {
         console.error("Error getting document: ", e);
     }
     if (Object.keys(hd).length == 0) {
-        game.updateMessage("移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+        game.updateMessage("移動するか攻撃するかを選択してください。");
     } else {
         if (hd.handType == "M") {
             let tmp;
@@ -19,7 +21,7 @@ export async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
-            game.updateMessage(game.oppName + "さんが" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+            game.updateMessage(game.oppName + "さんが" + hd.shipName + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
                 game.ownShips[hd.ship].hp--;
@@ -33,17 +35,18 @@ export async function turnPlay(game) {
                         }
                     });
                     if (isAllSunk) {
-                        const mes = game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。あなたの負けです。";
+                        const mes = game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。あなたの負けです。";
                         gameLose(game, mes);
                         return;
                     } else { 
-                        game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                        game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。移動するか攻撃するかを選択してください。");
                     }
                 } else {
-                    game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "に命中しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                    game.updateBoard();
+                    game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.shipName + "に命中しました。移動するか攻撃するかを選択してください。");
                 }
             } else { 
-                game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
+                game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください。");
             }
         }
     }
@@ -56,8 +59,6 @@ export async function turnPlay(game) {
         } else if (button == "attack") {
             res = await game.attack();
             break;
-        } else {
-            //game.updateCaution("無効なボタン入力です。");
         }
     } 
     try {
@@ -87,7 +88,7 @@ export async function turnWait(game, mes) {
         gameWin(game, m);
         return;
     } else {
-        game.updateMessage(mes + game.oppName + "さんの番です。相手を待っています...");
+        game.updateMessage(mes + game.oppName + "さんを待っています...");
         const wait = await onSnapshot(game.docRef, async () => {
             await game.loadTurn();
             if (game.turn == game.user) {
