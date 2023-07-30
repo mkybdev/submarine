@@ -1,7 +1,7 @@
 import { getDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { turnPlay, turnWait } from "./game.js";
 
-class Ship {
+export class Ship {
     constructor(type) {
         this.type = type;
         this.x;
@@ -11,7 +11,7 @@ class Ship {
     }
 }
 
-class Game {
+export class Game {
 
     constructor(user, docRef) {
         this.user = user;
@@ -26,6 +26,8 @@ class Game {
         this.state;
         this.ownShips = { "W": new Ship("W"), "C": new Ship("C"), "S": new Ship("S") };
         this.oppShips = { "W": new Ship("W"), "C": new Ship("C"), "S": new Ship("S") };
+        this.message = "";
+        this.cautionFlag = false;
     }
 
     updateMessage(msg) {
@@ -34,7 +36,28 @@ class Game {
         } else {
             document.getElementById("gameMessageSP").innerHTML = msg;
         }
+        this.message = msg;
         console.log("updateMessage OK");
+    }
+
+    updateCaution(msg) {
+        this.cautionFlag = true;
+        if (window.getComputedStyle(document.getElementById("mesSP")).getPropertyValue('display') == "none") {
+            document.getElementById("gameMessagePC").innerHTML = msg;
+        } else {
+            document.getElementById("gameMessageSP").innerHTML = msg;
+        }
+        setTimeout(() => {
+            if (this.cautionFlag) {
+                if (window.getComputedStyle(document.getElementById("mesSP")).getPropertyValue('display') == "none") {
+                    document.getElementById("gameMessagePC").innerHTML = this.message;
+                } else {
+                    document.getElementById("gameMessageSP").innerHTML = this.message;
+                }
+                this.cautionFlag = false;
+            }
+        }, 1000);
+        console.log("updateCaution OK");
     }
 
     async loadOppField() {
@@ -103,6 +126,7 @@ class Game {
                 turn: this.opp,
             });
             this.turn = this.opp;
+            console.log("changeTurn OK");
         } catch (e) {
             console.error("changeTurn Error: ", e);
         }
@@ -147,7 +171,7 @@ class Game {
                     btn.style.width = "100%";
                     btn.style.height = "100%";
                     if (window.getComputedStyle(document.getElementById("mesSP")).getPropertyValue('display') == "none") {
-                        btn.style.fontSize = "3em";
+                        btn.style.fontSize = "2.5em";
                     } else {
                         btn.style.fontSize = "1.75em";
                     }
@@ -196,9 +220,9 @@ class Game {
 
     readUserInput() {
         return new Promise((resolve) => {
-            document.addEventListener("keydown", function keydown(e) {
-                    document.removeEventListener("keydown", keydown);
-                    resolve(e.key);
+            document.addEventListener("click", function click(e) {
+                    document.removeEventListener("click", click);
+                    resolve(e.target.id);
             });
         });
     }
@@ -241,6 +265,7 @@ class Game {
 
     async move() {
         this.state = "move";
+        console.log("move Start")
         this.updateMessage("どの艦を動かしますか？（クリックで選択）");
         let el;
         while (true) {
@@ -248,12 +273,12 @@ class Game {
             if (el.innerHTML != "") {
                 break;
             } else {
-                this.updateMessage("別の場所を選択してください。");
+                this.updateCaution("別の場所を選択してください。");
             }
         }
         const ship = this.ownShips[el.innerHTML];
         let moveTo = [ship.x, ship.y];
-        this.updateMessage("艦の移動先を選択してください（矢印キーで移動、Enterキーで決定）。");
+        this.updateMessage("艦の移動先を選択してください（矢印ボタンで移動、Ｍボタンで決定）。");
         const collisionCheck = (pos, ship) => {
             let res = false;
             ["W", "C", "S"].forEach((key) => {
@@ -267,10 +292,10 @@ class Game {
         while (true) {
             document.getElementById("cell" + ship.y + ship.x).style.border = "2px solid blue";
             document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
-            const key = await this.readUserInput();
-            if (key == "Enter") {
+            const button = await this.readUserInput();
+            if (button == "move") {
                 if (collisionCheck(moveTo, ship.type)) {
-                    this.updateMessage("すでに艦がいる場所には動かせません。");
+                    this.updateCaution("すでに艦がいる場所には動かせません。");
                 } else {
                     document.getElementById("cell" + ship.y + ship.x).style.border = "1px solid white";
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
@@ -298,75 +323,58 @@ class Game {
                     await this.changeTurn();
                     break;
                 }
-            } else if (key == "ArrowUp") {
+            } else if (button == "up") {
                 if (!(moveTo[0] == ship.x || moveTo[1]-1 == ship.y)) {
-                    this.updateMessage("艦は縦横のどちらかにのみ動かせます。");
+                    this.updateCaution("艦は縦横のどちらかにのみ動かせます。");
                 } else if (moveTo[1] != 0) {
                     const tmp = [moveTo[0], moveTo[1]-1];
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
                     moveTo = tmp;
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
                 } else {
-                    this.updateMessage("他の場所を選択してください。");
+                    this.updateCaution("他の場所を選択してください。");
                 }
-            } else if (key == "ArrowDown") {
+            } else if (button == "down") {
                 if (!(moveTo[0] == ship.x || moveTo[1]+1 == ship.y)) {
-                    this.updateMessage("艦は縦横のどちらかにのみ動かせます。");
+                    this.updateCaution("艦は縦横のどちらかにのみ動かせます。");
                 } else if (moveTo[1] != 4) {
                     const tmp = [moveTo[0], moveTo[1]+1];
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
                     moveTo = tmp;
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
                 } else {
-                    this.updateMessage("他の場所を選択してください。");
+                    this.updateCaution("他の場所を選択してください。");
                 }
-            } else if (key == "ArrowLeft") {
+            } else if (button == "left") {
                 if (!(moveTo[0]-1 == ship.x || moveTo[1] == ship.y)) {
-                    this.updateMessage("艦は縦横のどちらかにのみ動かせます。");
+                    this.updateCaution("艦は縦横のどちらかにのみ動かせます。");
                 } else if (moveTo[0] != 0) {
                     const tmp = [moveTo[0]-1, moveTo[1]];
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
                     moveTo = tmp;
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
                 } else {
-                    this.updateMessage("他の場所を選択してください。");
+                    this.updateCaution("他の場所を選択してください。");
                 }
-            } else if (key == "ArrowRight") {
+            } else if (button == "right") {
                 if (!(moveTo[0]+1 == ship.x || moveTo[1] == ship.y)) {
-                    this.updateMessage("艦は縦横のどちらかにのみ動かせます。");
+                    this.updateCaution("艦は縦横のどちらかにのみ動かせます。");
                 } else if (moveTo[0] != 4) {
                     const tmp = [moveTo[0]+1, moveTo[1]];
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "1px solid white";
                     moveTo = tmp;
                     document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
                 } else {
-                    this.updateMessage("他の場所を選択してください。");
+                    this.updateCaution("他の場所を選択してください。");
                 }
             } else {
-                this.updateMessage("無効なキー入力です。");
+                //this.updateCaution("無効なボタン入力です。");
             }
         }
+        console.log("move End")
         return new Promise((resolve) => {
             resolve(res);
         });
-    }
-
-    async getOwnSurrounding(pos) {
-        let res = [];
-        for (let x = pos[0]-1; x <= pos[0]+1; x++) {
-            for (let y = pos[1]-1; y <= pos[1]+1; y++) {
-                if (x == pos[0] && y == pos[1]) {
-                    continue;
-                }
-                const el = await this.getOwn([x, y]);
-                if (el == "" || el == undefined) {
-                    if (this.ownShips[el].isAlive) {
-                        res.push(el);
-                    }
-                }
-            }
-        }
-        return res;
     }
 
     async getOppSurrounding(pos) {
@@ -391,6 +399,7 @@ class Game {
 
     async attack() {
         this.state = "attack";
+        console.log("attack Start")
         await this.loadOppField();
         await this.loadOppShips();
         this.updateMessage("攻撃する場所を選んでください（クリックで選択）。");
@@ -412,7 +421,7 @@ class Game {
             if (canAttack(pos)) {
                 break;
             } else {
-                this.updateMessage("他の場所を選択してください。");
+                this.updateCaution("他の場所を選択してください。");
             }
         }
         let res = { "handType": "A", "pos": pos, "ship": "", "message": "" };
@@ -454,6 +463,7 @@ class Game {
         await this.updateOwnShips();
         this.updateBoard();
         await this.changeTurn();
+        console.log("attack End")
         return new Promise((resolve) => {
             resolve(res);
         });
@@ -486,7 +496,7 @@ export default async function gameInit(db, roomID, user) {
                     ship.y = parseInt(el.id[4]);
                     break;
                 } else {
-                    game.updateMessage("他の場所を選択してください。");
+                    game.updateCaution("他の場所を選択してください。");
                 }
             }
             await game.updateOwnField();

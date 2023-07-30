@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Submarine</title>
     <link rel="stylesheet" href="./index.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
@@ -25,12 +26,21 @@
   <body>
     <div class="init" id="init">
       <h1 id="title">Submarine</h1>
-      <h1 id="initMessage">名前とルームIDを入力</h1>
-      <div class="form">
-        <input type="text" id="userName" placeholder="Name">
-        <input type="text" id="roomID" placeholder="Room ID">
+      <h1 id="initMessage">プレイ方法を選択してください</h1>
+      <div class="playOption" id="playOption">
+        <h2 id="playCpu">▶︎ コンピュータと対戦</h2>
+        <h2 id="playRoom">▶︎ ルームを作成して対戦</h2>
       </div>
-      <button id="enterRoom">Enter Room</button>
+      <div class="cpu" id="cpu">
+        <h2 id="easy">▶︎ EASY</h2>
+      </div>
+      <div class="room" id="room">
+        <div class="form">
+          <input type="text" id="userName" placeholder="名前">
+          <input type="text" id="roomID" placeholder="ルームID">
+        </div>
+        <button id="enterRoom">ルームに入室する</button>
+      </div>
     </div>
     <div class="operator">
       <div class="messenger" id="mesSP">
@@ -53,8 +63,16 @@
         <div class="message" id="gameMessagePC"></div>
       </div>
       <div class="controller">
-        <div class="arrows"></div>
-        <div class="buttons"></div>
+        <div class="arrows">
+          <div class="arrow" id="up">▲</div>
+          <div class="arrow" id="down">▼</div>
+          <div class="arrow" id="left">◀︎</div>
+          <div class="arrow" id="right">▶︎</div>
+        </div>
+        <div class="buttons">
+          <div class="button" id="move">Ｍ</div>
+          <div class="button" id="attack">Ａ</div>
+        </div>
       </div>
     </div>
   </body>

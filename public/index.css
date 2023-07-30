@@ -23,6 +23,7 @@ html {
     font-weight: normal;
     color: white;
     letter-spacing: 0.075em;
+    user-select: none;
 }
 
 body {
@@ -55,7 +56,21 @@ body {
 
 #initMessage {
     margin: 5dvh 0;
-    font-size: 3em;
+    font-size: 2.5em;
+}
+
+.init h2 {
+    font-size: 2em;
+}
+
+.playOption {
+    margin: 0 auto;
+    text-align: left;
+    width: fit-content;
+}
+
+.cpu, .room {
+    display: none;
 }
 
 .form {
@@ -68,16 +83,17 @@ body {
 
 .form input {
     margin: 2dvh 2dvw;
-    font-size: 2em;
-    width: 40%;
+    font-size: 1.75em;
+    width: 30%;
     font-family: 'PixelMplus', sans-serif;
-    padding: 0 0.5em;
+    padding: 0.25em 0.5em;
+    user-select: auto;
 }
 
 #enterRoom {
     margin: 2dvh 2dvw;
-    padding: 0.1em 1em;
-    font-size: 2em;
+    padding: 0.25em 1em;
+    font-size: 1.75em;
     font-family: 'PixelMplus', sans-serif;
     background-color: grey;
     color: white;
@@ -106,6 +122,13 @@ body {
     .screen {
         height: 70dvh;
         width: calc(70dvh * 85/90);
+    }
+}
+
+@media (max-width: 1000px) {
+    .screen {
+        height: 50dvh;
+        width: calc(50dvh * 85/90);
     }
 }
 
@@ -186,7 +209,7 @@ body {
 
 .icon img {
     width: 80%;
-    height: 80%;
+    aspect-ratio: 1/1;
 }
 
 .messenger .message {
@@ -205,12 +228,25 @@ body {
 
 @media (max-width: 1500px) {
     .messenger .icon {
-        width: 12.5dvw;
-        height: 12.5dvw;
+        width: 15dvw;
+        height: 15dvw;
     }  
     .messenger .message {
-        width: 22.5dvw;
-        height: 12.5dvw;
+        width: 25dvw;
+        height: 15dvw;
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 1000px) {
+    .messenger .icon {
+        width: 15dvw;
+        height: 20dvw;
+    }  
+    .messenger .message {
+        width: 30dvw;
+        height: 20dvw;
+        font-size: 1em;
     }
 }
 
@@ -239,13 +275,21 @@ body {
 .controller .arrows {
     width: 20dvw;
     height: 20dvw;
-    background-color: red;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 5%;
+    box-sizing: border-box;
 }
 
 .controller .buttons {
     width: 20dvw;
     height: 20dvw;
-    background-color: blue;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    padding: 5%;
+    box-sizing: border-box;
 }
 
 @media (max-width: 1500px) {
@@ -259,9 +303,68 @@ body {
     }
 }
 
+@media (max-width: 1000px) {
+    .controller .arrows {
+        width: 22.5dvw;
+        height: 22.5dvw;
+    }    
+    .controller .buttons {
+        width: 22.5dvw;
+        height: 22.5dvw;
+    }
+}
+
 @media (orientation: portrait) {
     .controller .arrows, .controller .buttons {
         width: 35dvw;
         height: 35dvw;
     }    
+}
+
+.arrows .arrow {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+#up {
+    grid-column: 2/3;
+    grid-row: 1/2;
+}
+
+#left {
+    grid-column: 1/2;
+    grid-row: 2/3;
+}
+
+#right {
+    grid-column: 3/4;
+    grid-row: 2/3;
+}
+
+#down {
+    grid-column: 2/3;
+    grid-row: 3/4;
+}
+
+.buttons .button {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    color: black;
+    border-radius: 15%;
+}
+
+#move {
+    grid-column: 1/2;
+    grid-row: 1/2;
+}
+
+#attack {
+    grid-column: 2/3;
+    grid-row: 2/3;
 }

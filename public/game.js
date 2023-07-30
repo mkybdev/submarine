@@ -10,7 +10,7 @@ export async function turnPlay(game) {
         console.error("Error getting document: ", e);
     }
     if (Object.keys(hd).length == 0) {
-        game.updateMessage("移動するか攻撃するかを選択してください（Mキーで移動、Aキーで攻撃）。");
+        game.updateMessage("移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
     } else {
         if (hd.handType == "M") {
             let tmp;
@@ -19,7 +19,7 @@ export async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
-            game.updateMessage(game.oppName + "さんが" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
+            game.updateMessage(game.oppName + "さんが" + hd.shipType + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
                 game.ownShips[hd.ship].hp--;
@@ -37,27 +37,27 @@ export async function turnPlay(game) {
                         gameLose(game, mes);
                         return;
                     } else { 
-                        game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。移動するか攻撃するかを選択してください。");
+                        game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "が撃沈しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
                     }
                 } else {
-                    game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "に命中しました。移動するか攻撃するかを選択してください。");
+                    game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.ship + "に命中しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
                 }
             } else { 
-                game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください。");
+                game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください（Ｍボタン：移動、Ａボタン：攻撃）。");
             }
         }
     }
     let res;
     while (true) {
-        const key = await game.readUserInput();
-        if (key == "m") {
+        const button = await game.readUserInput();
+        if (button == "move") {
             res = await game.move();
             break;
-        } else if (key == "a") {
+        } else if (button == "attack") {
             res = await game.attack();
             break;
         } else {
-            game.updateMessage("無効なキー入力です。");
+            //game.updateCaution("無効なボタン入力です。");
         }
     } 
     try {
@@ -101,14 +101,20 @@ export async function turnWait(game, mes) {
     }
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function gameWin(game, mes) {
     console.log("gameWin Start");
     game.updateMessage(mes);
+    await sleep(5000);
+    window.location.reload();
     console.log("gameWin End");
 }
 
 async function gameLose(game, mes) {
     console.log("gameEnd Start");
     game.updateMessage(mes);
+    await sleep(5000);
+    window.location.reload();
     console.log("gameEnd End");
 }
