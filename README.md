@@ -18,7 +18,7 @@
 <pre>
 ├── README.md
 ├── functions           # Firebase Cloud Functions（未使用）
-├── public              # フロントエンド部分
+├── public              # Firebase Hosting にデプロイするファイル
     ├── font            # フォント
     ├── images          # 画像
     ├── index.html      # メインページ
