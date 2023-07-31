@@ -10,7 +10,7 @@ export class Ship {
         this.name = (type == "W") ? "戦艦" : (type == "C") ? "巡洋艦" : "潜水艦";
         this.x;
         this.y;
-        this.hp = (type == "W") ? 1 : (type == "C") ? 1 : 1;
+        this.hp = (type == "W") ? 3 : (type == "C") ? 2 : 1;
         this.isAlive = true;
     }
 }
