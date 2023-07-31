@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submarine</title>
     <link rel="stylesheet" href="./index.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -25,14 +25,15 @@
   </head>
   <body>
     <div class="init" id="init">
-      <h1 id="title">潜水艦（仮）</h1>
-      <h1 id="initMessage">プレイ方法を選択してください</h1>
+      <h1 id="title">潜水艦<br>（仮）</h1>
+      <h1 id="initMessage"></h1>
       <div class="playOption" id="playOption">
         <h2 id="playCpu">▶︎ コンピュータと対戦</h2>
         <h2 id="playRoom">▶︎ ルーム対戦</h2>
+        <h2 id="playRoom">▶︎ 遊び方</h2>
       </div>
       <div class="cpu" id="cpu">
-        <h2 id="easy">▶︎ EASY</h2>
+        <h2 id="easy">▶︎ ＥＡＳＹ</h2>
       </div>
       <div class="room" id="room">
         <div class="form">
@@ -42,10 +43,10 @@
         <button id="enterRoom">ルームに入室する</button>
       </div>
     </div>
-    <div class="operator">
+    <div class="operator" id="operatorA">
       <div class="messenger" id="mesSP">
-        <div class="icon">
-          <img src="./commander.png">
+        <div class="icon" id="faceSP">
+          <img src="./images/normal.gif">
         </div>
         <div class="message" id="gameMessageSP"></div>
       </div>
@@ -55,10 +56,10 @@
         <div class="board" id="board"></div>
       </div>
     </div>
-    <div class="operator">
+    <div class="operator" id="operatorB">
       <div class="messenger" id="mesPC">
-        <div class="icon">
-          <img src="./commander.png">
+        <div class="icon" id="facePC">
+          <img src="./images/normal.gif">
         </div>
         <div class="message" id="gameMessagePC"></div>
       </div>
@@ -72,10 +73,10 @@
         </div>
         <div class="buttons">
           <div class="button" id="move">
-            <img src="./moveArrow.png" id="move">
+            <img src="./images/moveArrow.png" id="move">
           </div>
           <div class="button" id="attack">
-            <img src="./attack.png" id="attack">
+            <img src="./images/attack.png" id="attack">
           </div>
         </div>
       </div>

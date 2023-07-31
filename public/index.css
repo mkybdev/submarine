@@ -48,21 +48,34 @@ body {
 .init {
     margin: auto 0;
     text-align: center;
-    transform: translateY(-20%);
+    transform: translateY(-10%);
 }
 
 #title {
-    margin: 0 0 10dvh 0;
-    font-size: 7em;
+    margin: 0 0 7.5dvh 0;
+    font-size: 5em;
 }
 
 #initMessage {
     margin: 5dvh 0;
-    font-size: 2em;
+    font-size: 2.25em;
 }
 
 .init h2 {
-    font-size: 1.5em;
+    font-size: 2em;
+}
+
+@media (max-width: 850px) {
+    #title {
+        margin: 0 0 7.5dvh 0;
+        font-size: 4em;
+    }
+    #initMessage {
+        font-size: 1.75em;
+    }
+    .init h2 {
+        font-size: 1.5em;
+    }
 }
 
 .playOption {
@@ -102,21 +115,18 @@ body {
     color: white;
 }
 
-@media (max-width: 850px) {
-    #title {
-        margin: 0 0 10dvh 0;
-        font-size: 4em;
-    }
-    #initMessage {
-        font-size: 2em;
+@media (orientation: portrait) {
+    #enterRoom {
+        font-size: 1.5em;
     }
 }
 
 .screen {
     height: 90dvh;
-    width: 85dvh;
-    border-radius: 5%;
-    border: 3px solid white;
+    /*width: 85dvh;*/
+    width: 90dvh;
+    /*border-radius: 5%;
+    border: 3px solid white;*/
     margin: auto 0;
     box-sizing: border-box;
 }
@@ -124,21 +134,24 @@ body {
 @media (max-width: 1500px) {
     .screen {
         height: 70dvh;
-        width: calc(70dvh * 85/90);
+        /*width: calc(70dvh * 85/90);*/
+        width: 70dvh;
     }
 }
 
 @media (max-width: 1000px) {
     .screen {
         height: 50dvh;
-        width: calc(50dvh * 85/90);
+        /*width: calc(50dvh * 85/90);*/
+        width: 50dvh;
     }
 }
 
 @media (orientation: portrait) {
     .screen {
-        height: calc(65dvw * 90/85);
-        width: 65dvw;
+        /*height: calc(65dvw * 90/85);*/
+        height: 70dvw;
+        width: 70dvw;
         margin: 0 auto;
     }
 }
@@ -153,8 +166,8 @@ body {
 }
 
 .board {
-    width: 90%;
-    aspect-ratio: 1/1;
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
@@ -195,9 +208,13 @@ body {
     align-items: center;
 }
 
+#operatorA {
+    margin: 0 0 3dvh 0;
+}
+
 @media (orientation: portrait) {
-    .operator {
-        margin: 0 0 3dvh 0;
+    #operatorB {
+        margin: 0;
     }
 }
 
@@ -229,13 +246,15 @@ body {
 
 @media (orientation: portrait) {
     .messenger .icon {
-        justify-content: flex-start;
+        justify-content: center;
     }
 }
 
 .icon img {
-    width: 80%;
+    width: 50%;
     aspect-ratio: 1/1;
+    background-color: white;
+    border-radius: 10%;
 }
 
 .messenger .message {
@@ -279,23 +298,18 @@ body {
 @media (orientation: portrait) {
     .messenger .icon {
         width: 30dvw;
-        height: 30dvw;
+        height: 40dvw;
     }  
     .messenger .message {
         width: 50dvw;
-        height: 30dvw;
-        font-size: 1.25em;
+        height: 40dvw;
+        font-size: 1.2em;
     }
 }
 
 .controller {
     display: flex;
-}
-
-@media (orientation: portrait) {
-    .controller {
-        margin: 3dvh 0 0 0;
-    }
+    margin: 3dvh 0 0 0;
 }
 
 .controller .arrows {
@@ -304,7 +318,7 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    padding: 5%;
+    padding: 0%;
     box-sizing: border-box;
 }
 
@@ -342,8 +356,8 @@ body {
 
 @media (orientation: portrait) {
     .controller .arrows, .controller .buttons {
-        width: 35dvw;
-        height: 35dvw;
+        width: 40dvw;
+        height: 40dvw;
     }    
 }
 
@@ -353,6 +367,12 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 2em;
+}
+
+@media (orientation: portrait) {
+    .arrows .arrow {
+        font-size: 1.75em;
+    }   
 }
 
 #enter {

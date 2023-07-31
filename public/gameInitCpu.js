@@ -1,4 +1,3 @@
-import { getDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { Game, Ship } from "./gameInit.js";
 
 class GameCpu extends Game {
@@ -112,6 +111,8 @@ class GameCpu extends Game {
     async attack() {
         this.state = "attack";
         console.log("attack Start");
+        document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+        document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
         this.updateMessage("攻撃する場所を選択してください。");
         const canAttack = (pos) => {
             let res = false;
@@ -134,7 +135,7 @@ class GameCpu extends Game {
                 this.updateCaution("他の場所を選択してください。");
             }
         }
-        let res = { handType: "A", pos: pos, ship: "", shipName: "", message: "" };
+        let res = { handType: "A", pos: [pos[0]+1, pos[1]+1], ship: "", shipName: "", message: "" };
         const el = await this.getOpp(pos);
         if (el != "") {
             this.oppShips[el].hp--;
@@ -158,7 +159,7 @@ class GameCpu extends Game {
             let tmp = res.message.slice(0, -1);
             res.message = tmp + "の近くでした。";
         }
-        this.updateBoard();
+        await this.updateBoard();
         console.log("attack End");
         return new Promise((resolve) => {
             resolve(res);
@@ -168,7 +169,7 @@ class GameCpu extends Game {
     async moveCpu() {
         this.state = "moveCpu";
         console.log("moveCpu Start");
-        this.updateOppField();
+        await this.updateOppField();
         let rd = Math.floor(Math.random() * 3);
         while (!this.oppShips[Object.keys(this.oppShips)[rd]].isAlive) {
             rd = Math.floor(Math.random() * 3);
@@ -191,7 +192,7 @@ class GameCpu extends Game {
         }
         ship.x = moveTo[0];
         ship.y = moveTo[1];
-        this.updateOppField();
+        await this.updateOppField();
         let tmp;
         if (res.direction == "x") {
             tmp = (res.distance > 0) ? "右" : "左";
@@ -223,7 +224,7 @@ class GameCpu extends Game {
         while (!canAttack(pos)) {
             pos = [Math.floor(Math.random() * 5), Math.floor(Math.random() * 5)];
         }
-        let res = { handType: "A", pos: pos, ship: "", shipName: "", "message": "" };
+        let res = { handType: "A", pos: [pos[0]+1, pos[1]+1], ship: "", shipName: "", "message": "" };
         const el = await this.getOwn(pos);
         if (el != "") {
             this.ownShips[el].hp--;
@@ -247,7 +248,7 @@ class GameCpu extends Game {
             let tmp = res.message.slice(0, -1);
             res.message = tmp + "の近くでした。";
         }
-        this.updateBoard();
+        await this.updateBoard();
         console.log("attackCpu End");
         return new Promise((resolve) => {
             resolve(res);
@@ -282,7 +283,7 @@ export default async function gameInitCpu() {
                 game.updateCaution("他の場所を選択してください。");
             }
         }
-        game.updateBoard();
+        await game.updateBoard();
         await game.updateOwnField();
         console.log("setShip OK");
     }
@@ -337,6 +338,8 @@ async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
             game.updateMessage("相手が" + hd.shipName + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
@@ -354,13 +357,19 @@ async function turnPlay(game) {
                         gameLose(game, mes);
                         return;
                     } else { 
+                        document.getElementById("faceSP").innerHTML = "<img src=\"./images/sad.gif\">";
+                        document.getElementById("facePC").innerHTML = "<img src=\"./images/sad.gif\">";
                         game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。移動するか攻撃するかを選択してください。");
                     }
                 } else {
-                    game.updateBoard();
+                    await game.updateBoard();
+                    document.getElementById("faceSP").innerHTML = "<img src=\"./images/surprised.gif\">";
+                    document.getElementById("facePC").innerHTML = "<img src=\"./images/surprised.gif\">";
                     game.updateMessage("相手が(" + hd.pos + ")を攻撃し、" + hd.shipName + "に命中しました。移動するか攻撃するかを選択してください。");
                 }
             } else { 
+                document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+                document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
                 game.updateMessage("相手が(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください。");
             }
         }
@@ -378,12 +387,21 @@ async function turnPlay(game) {
     } 
     game.hand = res;
     console.log("turnPlay End");
+    if (res.handType == "A") {
+        if (res.ship == "") {
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
+        } else {
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/happy.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/happy.gif\">";
+        }
+    }
     turnWait(game, res.message); 
 }
 
 async function turnWait(game, mes) {
     console.log("turnWait Start");
-    game.updateOppField();
+    await game.updateOppField();
     let isAllSunk = true;
     Object.keys(game.oppShips).forEach((key) => {
         if (game.oppShips[key].isAlive) {
@@ -413,6 +431,8 @@ async function turnWait(game, mes) {
 
 async function gameWin(game, mes) {
     console.log("gameWin Start");
+    document.getElementById("faceSP").innerHTML = "<img src=\"./images/win.gif\">";
+    document.getElementById("facePC").innerHTML = "<img src=\"./images/win.gif\">";
     game.updateMessage(mes);
     await sleep(5000);
     window.location.reload();
@@ -421,6 +441,8 @@ async function gameWin(game, mes) {
 
 async function gameLose(game, mes) {
     console.log("gameEnd Start");
+    document.getElementById("faceSP").innerHTML = "<img src=\"./images/lose.gif\">";
+    document.getElementById("facePC").innerHTML = "<img src=\"./images/lose.gif\">";
     game.updateMessage(mes);
     await sleep(5000);
     window.location.reload();

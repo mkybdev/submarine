@@ -21,13 +21,15 @@ export async function turnPlay(game) {
             } else {
                 tmp = (hd.distance > 0) ? "下" : "上";
             }
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
             game.updateMessage(game.oppName + "さんが" + hd.shipName + "を" + tmp + "に" + Math.abs(hd.distance) + "マス動かしました。移動するか攻撃するかを選択してください。");
         } else if (hd.handType == "A") {
             if (hd.ship != "") {
                 game.ownShips[hd.ship].hp--;
                 if (game.ownShips[hd.ship].hp == 0) {
                     game.ownShips[hd.ship].isAlive = false;
-                    game.updateBoard();
+                    await game.updateBoard();
                     let isAllSunk = true;
                     Object.keys(game.ownShips).forEach((key) => {
                         if (game.ownShips[key].isAlive) {
@@ -39,13 +41,19 @@ export async function turnPlay(game) {
                         gameLose(game, mes);
                         return;
                     } else { 
+                        document.getElementById("faceSP").innerHTML = "<img src=\"./images/sad.gif\">";
+                        document.getElementById("facePC").innerHTML = "<img src=\"./images/sad.gif\">";
                         game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.shipName + "が撃沈しました。移動するか攻撃するかを選択してください。");
                     }
                 } else {
-                    game.updateBoard();
+                    await game.updateBoard();
+                    document.getElementById("faceSP").innerHTML = "<img src=\"./images/surprised.gif\">";
+                    document.getElementById("facePC").innerHTML = "<img src=\"./images/surprised.gif\">";
                     game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃し、" + hd.shipName + "に命中しました。移動するか攻撃するかを選択してください。");
                 }
             } else { 
+                document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+                document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
                 game.updateMessage(game.oppName + "さんが(" + hd.pos + ")を攻撃しました。移動するか攻撃するかを選択してください。");
             }
         }
@@ -69,6 +77,15 @@ export async function turnPlay(game) {
         console.error("Error updating Document: ", e);
     }
     console.log("turnPlay End");
+    if (res.handType == "A") {
+        if (res.ship == "") {
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
+        } else {
+            document.getElementById("faceSP").innerHTML = "<img src=\"./images/happy.gif\">";
+            document.getElementById("facePC").innerHTML = "<img src=\"./images/happy.gif\">";
+        }
+    }
     turnWait(game, res.message); 
 }
 
@@ -106,6 +123,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function gameWin(game, mes) {
     console.log("gameWin Start");
+    document.getElementById("faceSP").innerHTML = "<img src=\"./images/win.gif\">";
+    document.getElementById("facePC").innerHTML = "<img src=\"./images/win.gif\">";
     game.updateMessage(mes);
     await sleep(5000);
     window.location.reload();
@@ -114,6 +133,8 @@ async function gameWin(game, mes) {
 
 async function gameLose(game, mes) {
     console.log("gameEnd Start");
+    document.getElementById("faceSP").innerHTML = "<img src=\"./images/lose.gif\">";
+    document.getElementById("facePC").innerHTML = "<img src=\"./images/lose.gif\">";
     game.updateMessage(mes);
     await sleep(5000);
     window.location.reload();

@@ -20,7 +20,7 @@ initializeApp(firebaseConfig);
 
 function initializeFirebaseEmulating() {
     const db = getFirestore();
-    connectFirestoreEmulator(db, 'localhost', 8080);
+    connectFirestoreEmulator(db, "192.168.3.42", 8080);
     return db;
 }
 
@@ -32,14 +32,31 @@ function initializeFirebase() {
 // Initialize Firebase
 const isEmulating = false;
 const db = (isEmulating) ? initializeFirebaseEmulating() : initializeFirebase();
+/*
+document.addEventListener('touchstart', (event) => {
+    if(event.touches && event.touches.length > 1) {
+        event.preventDefault();
+    }
+}, {
+    passive: false
+});
 
+document.addEventListener('touchmove', function (event) {
+    if (event.scale !== 1) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
+document.addEventListener("dblclick", function(e){ e.preventDefault();}, { passive: false });
+*/
 for (const el of document.getElementsByClassName('operator')) {
     el.style.display = "none";
 }
 document.querySelector('.screen').style.display = "none";
 
 document.getElementById('playCpu').onclick = function() {
-    document.getElementById('initMessage').textContent = "コンピュータの強さを選択してください";
+    document.getElementById('title').style.display = "none";
+    document.getElementById('initMessage').innerHTML = "コンピュータの強さを<br>選択してください";
     document.getElementById('playOption').style.display = "none";
     document.getElementById('cpu').style.display = "block";
 }
@@ -57,7 +74,8 @@ async function playCpu(difficulty) {
 document.getElementById('easy').onclick = () => playCpu('easy');
 
 document.getElementById('playRoom').onclick = function() {
-    document.getElementById('initMessage').textContent = "名前とルームIDを入力してください";
+    document.getElementById('title').style.display = "none";
+    document.getElementById('initMessage').innerHTML = "名前とルームIDを<br>入力してください";
     document.getElementById('playOption').style.display = "none";
     document.getElementById('room').style.display = "block";
 }

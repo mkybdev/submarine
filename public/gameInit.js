@@ -167,10 +167,11 @@ export class Game {
                 for (let j = 0; j < 5; j++) {
                     let btn = document.createElement('button');
                     btn.className = "cell";
-                    btn.style.border = "1.5px solid white";
+                    btn.style.border = "1.75px solid white";
                     btn.style.backgroundColor = "black";
                     btn.style.width = "100%";
                     btn.style.height = "100%";
+                    btn.style.padding = "0";
                     if (window.getComputedStyle(document.getElementById("mesSP")).getPropertyValue('display') == "none") {
                         btn.style.fontSize = "2.5em";
                     } else {
@@ -186,7 +187,7 @@ export class Game {
         }
     }
 
-    updateBoard() {
+    async updateBoard() {
         try {
             const cells = document.querySelectorAll(".cell");
             cells.forEach((cell) => {
@@ -196,9 +197,9 @@ export class Game {
                 const ship = this.ownShips[key];
                 if (ship.x != undefined && ship.isAlive) {
                     document.getElementById("cell" + ship.y + ship.x).innerHTML =
-                        (ship.type == "W") ? "<img src=\"warship.png\" class=\"shipIcon\" name=\"W\"><div id=\"hp\">" + ship.hp + "</div>" :
-                        (ship.type == "C") ? "<img src=\"cruiser.png\" class=\"shipIcon\" name=\"C\"><div id=\"hp\">" + ship.hp + "</div>" :
-                        "<img src=\"submarine.png\" class=\"shipIcon\" name=\"S\"><div id=\"hp\">" + ship.hp + "</div>";
+                        (ship.type == "W") ? "<img src=\"./images/warship.png\" class=\"shipIcon\" name=\"W\"><div id=\"hp\">" + ship.hp + "</div>" :
+                        (ship.type == "C") ? "<img src=\"./images/cruiser.png\" class=\"shipIcon\" name=\"C\"><div id=\"hp\">" + ship.hp + "</div>" :
+                        "<img src=\"./images/submarine.png\" class=\"shipIcon\" name=\"S\"><div id=\"hp\">" + ship.hp + "</div>";
                 }
             });
             console.log("updateBoard OK");
@@ -269,6 +270,8 @@ export class Game {
     async move() {
         this.state = "move";
         console.log("move Start")
+        document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+        document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
         this.updateMessage("どの艦を動かしますか？");
         let elname;
         while (true) {
@@ -317,7 +320,7 @@ export class Game {
                     ship.y = moveTo[1];
                     await this.updateOwnField();
                     await this.updateOwnShips();
-                    this.updateBoard();
+                    await this.updateBoard();
                     let tmp;
                     if (res.direction == "x") {
                         tmp = (res.distance > 0) ? "右" : "左";
@@ -405,6 +408,8 @@ export class Game {
         console.log("attack Start")
         await this.loadOppField();
         await this.loadOppShips();
+        document.getElementById("faceSP").innerHTML = "<img src=\"./images/normal.gif\">";
+        document.getElementById("facePC").innerHTML = "<img src=\"./images/normal.gif\">";
         this.updateMessage("攻撃する場所を選択してください。");
         const canAttack = (pos) => {
             let res = false;
@@ -427,7 +432,8 @@ export class Game {
                 this.updateCaution("他の場所を選択してください。");
             }
         }
-        let res = { handType: "A", pos: pos, ship: "", shipName: "", message: "" };
+        this.updateMessage("(" + [pos[0]+1, pos[1]+1] + ")を攻撃中です…");
+        let res = { handType: "A", pos: [pos[0]+1, pos[1]+1], ship: "", shipName: "", message: "" };
         const el = await this.getOpp(pos);
         if (el != "") {
             try {
@@ -465,7 +471,7 @@ export class Game {
         }
         await this.updateOwnField();
         await this.updateOwnShips();
-        this.updateBoard();
+        await this.updateBoard();
         await this.changeTurn();
         console.log("attack End")
         return new Promise((resolve) => {
@@ -504,7 +510,7 @@ export default async function gameInit(db, roomID, user) {
                 }
             }
             await game.updateOwnField();
-            game.updateBoard();
+            await game.updateBoard();
         }
         await setShip(game.ownShips["W"]);
         await setShip(game.ownShips["C"]);
