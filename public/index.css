@@ -45,15 +45,89 @@ body {
     }
 }
 
+.howtoplay ul {
+    padding-left: 1em;
+}
+
+.howtoplay {
+    width: 100%;
+    height: 100%;
+    padding: 5%;
+    background-color: black;
+    color: white;
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    overflow-y: scroll;
+    box-sizing: border-box;
+    line-height: 150%;
+    font-size: 1.25em;
+}
+
+@media (orientation: portrait) {
+    .howtoplay {
+        padding: 10% 5%;
+        font-size: 1em;
+    }
+}
+
+.howtoplay h1 {
+    margin-bottom: 0.5em;
+}
+
+.howtoplay h2 {
+    margin: 0.75em 0;
+    font-size: 1.5em;
+}
+
+#opBoard {
+    width: 30%;
+}
+
+#opOperation {
+    width: 50%;
+}
+
+@media (orientation: portrait) {
+    #opBoard {
+        width: 60%;
+    }    
+    #opOperation {
+        width: 100%;
+    }
+}
+
+#htpTitle {
+    font-size: 2em;
+    color: white;
+}
+
+#htpBack {
+    margin-top: 2em;
+}
+
 .init {
     margin: auto 0;
     text-align: center;
-    transform: translateY(-10%);
 }
 
 #title {
+    width: 40dvw;
+    padding: 0.25em 0;
     margin: 0 0 7.5dvh 0;
     font-size: 5em;
+    letter-spacing: 0.25em;
+    text-indent: 0.25em;
+    line-height: 150%;
+    border: 5px solid white;
+    border-radius: 2.5%;
+    box-sizing: border-box;
+}
+
+#title p {
+    display: block;
+    text-align: center;
+    margin: 0;
 }
 
 #initMessage {
@@ -65,9 +139,30 @@ body {
     font-size: 2em;
 }
 
+.init h1, .init h2 {
+    line-height: 150%;
+}
+
 @media (max-width: 850px) {
     #title {
-        margin: 0 0 7.5dvh 0;
+        width: 50dvw;
+        padding: 0.25em 0;
+        margin: 0 auto 7.5dvh auto;
+        font-size: 4em;
+    }
+    #initMessage {
+        font-size: 1.75em;
+    }
+    .init h2 {
+        font-size: 1.5em;
+    }
+}
+
+@media (orientation: portrait) {
+    #title {
+        width: 80dvw;
+        padding: 0.25em 0;
+        margin: 0 auto 7.5dvh auto;
         font-size: 4em;
     }
     #initMessage {
@@ -86,6 +181,10 @@ body {
 
 .cpu, .room {
     display: none;
+}
+
+#cpuBack, #roomBack {
+    margin-top: 3em;
 }
 
 .form {
@@ -150,8 +249,8 @@ body {
 @media (orientation: portrait) {
     .screen {
         /*height: calc(65dvw * 90/85);*/
-        height: 70dvw;
-        width: 70dvw;
+        height: 85dvw;
+        width: 85dvw;
         margin: 0 auto;
     }
 }
@@ -209,7 +308,7 @@ body {
 }
 
 #operatorA {
-    margin: 0 0 3dvh 0;
+    margin: 0 0 2dvh 0;
 }
 
 @media (orientation: portrait) {
@@ -279,7 +378,7 @@ body {
     .messenger .message {
         width: 25dvw;
         height: 15dvw;
-        font-size: 1.5em;
+        font-size: 1.25em;
     }
 }
 
@@ -298,18 +397,18 @@ body {
 @media (orientation: portrait) {
     .messenger .icon {
         width: 30dvw;
-        height: 40dvw;
+        height: 35dvw;
     }  
     .messenger .message {
         width: 50dvw;
-        height: 40dvw;
+        height: 35dvw;
         font-size: 1.2em;
     }
 }
 
 .controller {
     display: flex;
-    margin: 3dvh 0 0 0;
+    margin: 2dvh 0 0 0;
 }
 
 .controller .arrows {
@@ -328,7 +427,7 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    padding: 5%;
+    padding: 2%;
     box-sizing: border-box;
 }
 
@@ -356,8 +455,8 @@ body {
 
 @media (orientation: portrait) {
     .controller .arrows, .controller .buttons {
-        width: 40dvw;
-        height: 40dvw;
+        width: 35dvw;
+        height: 35dvw;
     }    
 }
 
@@ -366,12 +465,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2em;
+    font-size: 3em;
+}
+
+@media (max-width: 850px) {
+    .arrows .arrow {
+        font-size: 2.5em;
+    }   
 }
 
 @media (orientation: portrait) {
     .arrows .arrow {
-        font-size: 1.75em;
+        font-size: 2em;
     }   
 }
 
@@ -426,4 +531,25 @@ body {
 #attack img {
     width: 70%;
     aspect-ratio: 1/1;
+}
+
+.gameEnd {
+    display: none;
+    color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+}
+
+#gameEndMessage {
+    font-size: 2em;
+    margin: 1em 0;
+}
+
+@media (orientation: portrait) {
+    #gameEndMessage {
+        font-size: 1.75em;
+        margin: 0.5em 0;
+    } 
 }

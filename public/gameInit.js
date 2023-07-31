@@ -1,17 +1,23 @@
 import { getDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { turnPlay, turnWait } from "./game.js";
 
+/**
+    * Shipクラス
+*/
 export class Ship {
     constructor(type) {
         this.type = type;
         this.name = (type == "W") ? "戦艦" : (type == "C") ? "巡洋艦" : "潜水艦";
         this.x;
         this.y;
-        this.hp = (type == "W") ? 3 : (type == "C") ? 2 : 1;
+        this.hp = (type == "W") ? 1 : (type == "C") ? 1 : 1;
         this.isAlive = true;
     }
 }
 
+/**
+    * Gameクラス
+*/
 export class Game {
 
     constructor(user, docRef) {
@@ -29,6 +35,7 @@ export class Game {
         this.oppShips = { "W": new Ship("W"), "C": new Ship("C"), "S": new Ship("S") };
         this.message = "";
         this.cautionFlag = false;
+        this.turns = 0;
     }
 
     updateMessage(msg) {
@@ -297,8 +304,8 @@ export class Game {
         }
         let res = { handType: "", shipType: "", shipName: "", direction: "", distance: 0, message: "" };
         while (true) {
-            document.getElementById("cell" + ship.y + ship.x).style.border = "2px solid blue";
-            document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "2px solid red";
+            document.getElementById("cell" + ship.y + ship.x).style.border = "3px solid blue";
+            document.getElementById("cell" + moveTo[1] + moveTo[0]).style.border = "3px solid red";
             const button = await this.readUserInput();
             if (button == "enter") {
                 if (collisionCheck(moveTo, ship.type)) {
@@ -481,6 +488,9 @@ export class Game {
 
 }
 
+/**
+    * ゲーム初期化
+*/
 export default async function gameInit(db, roomID, user) {
 
     const docRef = doc(db, "rooms", roomID);

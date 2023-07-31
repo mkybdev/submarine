@@ -9,31 +9,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
-    <!-- update the version number as needed -->
     <script defer src="/__/firebase/9.22.2/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
     <script defer src="/__/firebase/9.22.2/firebase-auth-compat.js"></script>
     <script defer src="/__/firebase/9.22.2/firebase-firestore-compat.js"></script>
     <script defer src="/__/firebase/9.22.2/firebase-functions-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
     <script type="module" src="./roomInit.js"></script>
     <script type="module" src="./gameInit.js"></script>
   </head>
   <body>
+    <div class="howtoplay" id="howtoplay">
+      <h1 id="htpTitle">遊び方</h1>
+      <h2>ルール</h2>
+      このゲームは、盤面上に配置した艦を移動・攻撃し、先に相手の艦を全て撃沈した方が勝ちとなるゲームです。
+      <br><br>
+      ゲームは次のように進行します。
+      <ol>
+        <li>プレイヤーは５ｘ５のマス目上に戦艦、巡洋艦、潜水艦を配置する。自分の艦同士を同じ場所に配置してはならない。</li>
+        <li>手番が回ってきたプレイヤーは艦の移動か攻撃を行える。</li>
+        <ul>
+          <li>移動</li>
+          <ul>
+            <li>自分の艦１隻を縦横のどちらかにいくらでも動かすことができる。</li>
+            <li>ただし、自分の他の艦がいる場所には動かせず、相手の艦と位置が重複してもよい。</li>
+            <li>移動を行った場合は相手にどの艦をどちらに何マス動かしたかが報告される。</li>
+          </ul>
+          <li>攻撃</li>
+          <ul>
+            <li>自分の艦がいる位置とその周囲１マスを攻撃することができる。</li>
+            <li>相手の艦に攻撃が命中するとその艦のＨＰが１減少し、艦種が報告される。</li>
+            <li>ＨＰは戦艦が３、巡洋艦が２、潜水艦が１に設定されており、ＨＰが０になると沈没する。</li>
+            <li>攻撃した位置が相手の艦の周囲１マスだった場合はその艦種が報告される。</li>
+          </ul>
+        </ul>
+        <li>以上をいずれかのプレイヤーの艦が全て沈没するまで繰り返し、最後まで艦が残っていたプレイヤーが勝利する。</li>
+      </ol>
+      <h2>操作方法</h2>
+      <p>盤面上の操作</p>
+      <img src="./images/board.png" id="opBoard">
+      <p style="margin-top: 2em;">各ボタンの操作</p>
+      <img src="./images/operation.png" id="opOperation">
+      <h2 id="htpBack">▶︎ 戻る</h2>
+    </div>
     <div class="init" id="init">
-      <h1 id="title">潜水艦<br>（仮）</h1>
+      <div id="title">
+        <p>潜水艦</p>
+        <p>（仮）</p>
+      </div>
       <h1 id="initMessage"></h1>
       <div class="playOption" id="playOption">
         <h2 id="playCpu">▶︎ コンピュータと対戦</h2>
         <h2 id="playRoom">▶︎ ルーム対戦</h2>
-        <h2 id="playRoom">▶︎ 遊び方</h2>
+        <h2 id="htp">▶︎ 遊び方</h2>
       </div>
       <div class="cpu" id="cpu">
         <h2 id="easy">▶︎ ＥＡＳＹ</h2>
+        <h2 id="cpuBack">▶︎ 戻る</h2>
       </div>
       <div class="room" id="room">
         <div class="form">
@@ -41,6 +72,7 @@
           <input type="text" id="roomID" placeholder="ルームID">
         </div>
         <button id="enterRoom">ルームに入室する</button>
+        <h2 id="roomBack">▶︎ 戻る</h2>
       </div>
     </div>
     <div class="operator" id="operatorA">
@@ -63,21 +95,25 @@
         </div>
         <div class="message" id="gameMessagePC"></div>
       </div>
-      <div class="controller">
-        <div class="arrows">
+      <div class="controller" id="controller">
+        <div class="arrows" id="arrows">
           <div class="arrow" id="enter">●</div>
           <div class="arrow" id="up">▲</div>
           <div class="arrow" id="down">▼</div>
           <div class="arrow" id="left">◀︎</div>
           <div class="arrow" id="right">▶︎</div>
         </div>
-        <div class="buttons">
+        <div class="buttons" id="buttons">
           <div class="button" id="move">
             <img src="./images/moveArrow.png" id="move">
           </div>
           <div class="button" id="attack">
             <img src="./images/attack.png" id="attack">
           </div>
+        </div>
+        <div class="gameEnd" id="gameEnd">
+          <div class="gameEndMessage" id="gameEndMessage"></div>
+          <h2 id="gameEndBack">▶︎ トップへ戻る</h2>
         </div>
       </div>
     </div>

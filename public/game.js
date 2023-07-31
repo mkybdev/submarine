@@ -1,9 +1,13 @@
 import { onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+/**
+    * 行動ターン
+*/
 export async function turnPlay(game) {
     console.log(game.ownShips);
     console.log(game.ownField);
     console.log("turnPlay Start");
+    game.turns += 1;
     let hd;
     try {
         const querySnapshot = await getDoc(game.docRef);
@@ -89,6 +93,9 @@ export async function turnPlay(game) {
     turnWait(game, res.message); 
 }
 
+/**
+    * 待機ターン
+*/
 export async function turnWait(game, mes) {
     console.log("turnWait Start");
     await game.loadOppField();
@@ -119,24 +126,42 @@ export async function turnWait(game, mes) {
     }
 }
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function gameWin(game, mes) {
+/**
+    * 勝利処理
+*/
+export async function gameWin(game, mes) {
     console.log("gameWin Start");
+    game.updateMessage(mes);
     document.getElementById("faceSP").innerHTML = "<img src=\"./images/win.gif\">";
     document.getElementById("facePC").innerHTML = "<img src=\"./images/win.gif\">";
-    game.updateMessage(mes);
-    await sleep(5000);
-    window.location.reload();
+    document.getElementById('arrows').style.display = "none";
+    document.getElementById('buttons').style.display = "none";
+    document.getElementById('gameEnd').style.display = "flex";
+    const turn = String(game.turns).replace(/[A-Za-z0-9]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+    });
+    document.getElementById('gameEndMessage').innerHTML = turn + "ターンで勝利！";
     console.log("gameWin End");
 }
 
-async function gameLose(game, mes) {
+/**
+    * 敗北処理
+*/
+export async function gameLose(game, mes) {
     console.log("gameEnd Start");
+    game.updateMessage(mes);
     document.getElementById("faceSP").innerHTML = "<img src=\"./images/lose.gif\">";
     document.getElementById("facePC").innerHTML = "<img src=\"./images/lose.gif\">";
-    game.updateMessage(mes);
-    await sleep(5000);
-    window.location.reload();
+    document.getElementById('arrows').style.display = "none";
+    document.getElementById('buttons').style.display = "none";
+    document.getElementById('gameEnd').style.display = "flex";
+    const turn = String(game.turns).replace(/[A-Za-z0-9]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+    });
+    document.getElementById('gameEndMessage').innerHTML = turn + "ターンで敗北...";
     console.log("gameEnd End");
+}
+
+document.getElementById('gameEndBack').onclick = () => {
+    window.location.reload();
 }

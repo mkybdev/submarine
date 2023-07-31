@@ -1,5 +1,9 @@
 import { Game, Ship } from "./gameInit.js";
+import { gameWin, gameLose } from "./game.js";
 
+/**
+    * GameCpuクラス
+*/
 class GameCpu extends Game {
 
     constructor() {
@@ -257,9 +261,14 @@ class GameCpu extends Game {
 
 }
 
+/**
+    * ゲーム初期化（対コンピュータ戦）
+*/
 export default async function gameInitCpu() {
 
     const game = new GameCpu();
+
+    //gameWin(game, "test");
 
     const fieldInitial = () => {
         let tmp = {};
@@ -321,9 +330,13 @@ export default async function gameInitCpu() {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+    * 行動ターン（対コンピュータ戦）
+*/
 async function turnPlay(game) {
     /*console.log(game.ownShips);
     console.log(game.ownField);*/
+    game.turns += 1;
     console.log(game.oppShips);
     console.log(game.oppField);
     console.log("turnPlay Start");
@@ -399,6 +412,9 @@ async function turnPlay(game) {
     turnWait(game, res.message); 
 }
 
+/**
+    * 待機ターン（対コンピュータ戦）
+*/
 async function turnWait(game, mes) {
     console.log("turnWait Start");
     await game.updateOppField();
@@ -429,22 +445,6 @@ async function turnWait(game, mes) {
     }
 }
 
-async function gameWin(game, mes) {
-    console.log("gameWin Start");
-    document.getElementById("faceSP").innerHTML = "<img src=\"./images/win.gif\">";
-    document.getElementById("facePC").innerHTML = "<img src=\"./images/win.gif\">";
-    game.updateMessage(mes);
-    await sleep(5000);
+document.getElementById('gameEndBack').onclick = () => {
     window.location.reload();
-    console.log("gameWin End");
-}
-
-async function gameLose(game, mes) {
-    console.log("gameEnd Start");
-    document.getElementById("faceSP").innerHTML = "<img src=\"./images/lose.gif\">";
-    document.getElementById("facePC").innerHTML = "<img src=\"./images/lose.gif\">";
-    game.updateMessage(mes);
-    await sleep(5000);
-    window.location.reload();
-    console.log("gameEnd End");
 }

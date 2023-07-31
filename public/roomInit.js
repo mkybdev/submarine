@@ -1,12 +1,11 @@
 import { getFirestore, connectFirestoreEmulator, onSnapshot, collection, getDoc, setDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 import gameInit from './gameInit.js';
 import gameInitCpu from './gameInitCpu.js';
 
-// Your web app's Firebase configuration
+/**
+    * Firebaseの設定
+*/
 const firebaseConfig = {
     apiKey: "AIzaSyDeb13n42OlEVzhv2Hx_Ll04FuZOi0GhCE",
     authDomain: "mkybdevssubmarine.firebaseapp.com",
@@ -29,9 +28,15 @@ function initializeFirebase() {
     return getFirestore(app);
 }
 
-// Initialize Firebase
+/**
+    * Firebase初期化
+*/
 const isEmulating = false;
 const db = (isEmulating) ? initializeFirebaseEmulating() : initializeFirebase();
+
+/**
+    * ダブルタップによる拡大防止（未遂）
+*/
 /*
 document.addEventListener('touchstart', (event) => {
     if(event.touches && event.touches.length > 1) {
@@ -49,11 +54,18 @@ document.addEventListener('touchmove', function (event) {
 
 document.addEventListener("dblclick", function(e){ e.preventDefault();}, { passive: false });
 */
+
+/**
+    * UI初期化
+*/
 for (const el of document.getElementsByClassName('operator')) {
     el.style.display = "none";
 }
 document.querySelector('.screen').style.display = "none";
 
+/**
+    * 各種ボタンの挙動
+*/
 document.getElementById('playCpu').onclick = function() {
     document.getElementById('title').style.display = "none";
     document.getElementById('initMessage').innerHTML = "コンピュータの強さを<br>選択してください";
@@ -151,4 +163,28 @@ document.getElementById('enterRoom').onclick = async function() {
             });
         }
     }
+}
+
+document.getElementById('htp').onclick = () => {
+    document.getElementById('init').style.display = "none";
+    document.getElementById('howtoplay').style.display = "flex";
+}
+
+document.getElementById('htpBack').onclick = () => {
+    document.getElementById('init').style.display = "block";
+    document.getElementById('howtoplay').style.display = "none";
+}
+
+document.getElementById('cpuBack').onclick = () => {
+    document.getElementById('title').style.display = "block";
+    document.getElementById('initMessage').innerHTML = "";
+    document.getElementById('playOption').style.display = "block";
+    document.getElementById('cpu').style.display = "none";
+}
+
+document.getElementById('roomBack').onclick = function() {
+    document.getElementById('title').style.display = "block";
+    document.getElementById('initMessage').innerHTML = "";
+    document.getElementById('playOption').style.display = "block";
+    document.getElementById('room').style.display = "none";
 }
